@@ -4,6 +4,10 @@
 
 SlothDesk AI is a local-first productivity helper built for the Hacktoberfest Open-Source AI Challenge theme **Slow and Steady**. It helps users organize a messy task list, summarize notes, create a low-energy plan, and break intimidating work into smaller steps.
 
+## Preview
+
+![SlothDesk AI Preview](slothdesh.png)
+
 ## Why open-source AI?
 
 SlothDesk is designed to use [Ollama](https://ollama.com/) with an open-weight model such as `llama3.2`. When connected to Ollama, prompts are sent to the local model running on the user's computer instead of a hosted proprietary AI API. This means:
