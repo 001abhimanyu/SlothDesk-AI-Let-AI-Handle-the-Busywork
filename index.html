@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SlothDesk AI — Let AI Handle the Busywork</title>
+<style>
+:root{--ink:#20352d;--muted:#68776f;--green:#426b52;--mint:#eaf2e8;--cream:#fbfaf5;--line:#e4e9df;--white:#fff;--orange:#e9a86c}
+*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+button,textarea,input,select{font:inherit}button{cursor:pointer;border:0}
+header{max-width:1160px;margin:auto;padding:24px 24px 10px;display:flex;justify-content:space-between;align-items:center;gap:16px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:850;font-size:1.15rem;letter-spacing:-.03em}.logo{width:40px;height:40px;border-radius:14px;background:var(--green);color:white;display:grid;place-items:center;font-size:23px}
+.pill{border:1px solid #d7e2d5;color:var(--green);padding:8px 12px;border-radius:99px;font-size:.8rem;font-weight:700;background:#f4f8f1}
+main{max-width:1160px;margin:auto;padding:28px 24px 64px}
+.hero{display:grid;grid-template-columns:1.3fr .7fr;gap:30px;align-items:center;padding:38px 0 34px}
+.eyebrow{color:var(--green);font-size:.78rem;font-weight:850;text-transform:uppercase;letter-spacing:.14em}
+h1{font-size:clamp(2.5rem,6vw,4.8rem);line-height:.99;letter-spacing:-.065em;margin:14px 0 18px;max-width:720px}
+h1 span{color:var(--green)}.hero p{color:var(--muted);font-size:1.08rem;line-height:1.7;max-width:620px}
+.hero-art{background:var(--mint);border-radius:32px;min-height:270px;display:grid;place-items:center;position:relative;overflow:hidden}
+.sun{position:absolute;width:190px;height:190px;border-radius:50%;background:#f5d6a7;right:18px;top:14px;opacity:.85}
+.sloth{font-size:112px;z-index:1;filter:drop-shadow(0 12px 8px #24432a18)}
+.art-note{position:absolute;z-index:2;bottom:20px;left:20px;background:#ffffffdc;padding:12px 15px;border-radius:14px;font-size:.83rem;font-weight:750}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}.stat{background:white;border:1px solid var(--line);border-radius:14px;padding:12px 15px;font-size:.83rem;color:var(--muted)}.stat strong{color:var(--ink);display:block;font-size:1.03rem;margin-bottom:2px}
+.layout{display:grid;grid-template-columns:260px minmax(0,1fr);gap:22px;margin-top:18px}
+.sidebar,.workspace,.panel{background:white;border:1px solid var(--line);border-radius:22px}
+.sidebar{padding:20px;height:max-content}.side-title{font-size:.74rem;color:var(--muted);font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin:4px 0 14px}
+.navbtn{width:100%;text-align:left;background:transparent;padding:12px;border-radius:12px;color:#53635a;margin:3px 0;font-weight:700;display:flex;gap:10px;align-items:center}
+.navbtn.active,.navbtn:hover{background:var(--mint);color:var(--green)}
+.localbox{margin-top:22px;padding:14px;background:#f7f8f2;border-radius:15px;font-size:.83rem;line-height:1.55;color:var(--muted)}.dot{display:inline-block;width:8px;height:8px;background:#d18b45;border-radius:50%;margin-right:6px}.dot.on{background:#4c9a67}
+.workspace{padding:clamp(18px,3vw,30px)}.workspace-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:22px}
+h2{margin:0;font-size:1.55rem;letter-spacing:-.04em}.sub{color:var(--muted);font-size:.92rem;margin-top:7px;line-height:1.5}
+.mode-tag{background:#f2f6ef;color:var(--green);font-size:.75rem;font-weight:800;padding:8px 10px;border-radius:9px;white-space:nowrap}
+.field-label{display:block;font-weight:800;font-size:.88rem;margin:18px 0 9px}
+textarea, input, select{width:100%;border:1px solid #dfe6dd;border-radius:13px;padding:14px;background:#fff;color:var(--ink);outline:none}
+textarea{min-height:150px;resize:vertical;line-height:1.6}textarea:focus,input:focus,select:focus{border-color:#6b9776;box-shadow:0 0 0 3px #eaf2e8}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:17px}
+.primary{background:var(--green);color:white;padding:13px 18px;border-radius:12px;font-weight:800;box-shadow:0 5px 12px #426b5220}
+.primary:hover{background:#31563f}.secondary{background:#f0f4ed;color:var(--green);padding:13px 16px;border-radius:12px;font-weight:800}
+.result{margin-top:24px;border:1px solid var(--line);background:#fcfdf9;border-radius:16px;padding:18px;min-height:110px;white-space:pre-wrap;line-height:1.7;color:#34483d;overflow-wrap:anywhere}
+.result-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;font-size:.82rem;font-weight:850}
+.result-head button{background:transparent;color:var(--green);font-weight:800}
+.empty{color:#87938a}.notice{font-size:.8rem;color:var(--muted);line-height:1.6;margin-top:13px}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#20352d;color:white;padding:12px 16px;border-radius:12px;display:none;max-width:90%;z-index:10}
+footer{max-width:1160px;margin:0 auto;padding:0 24px 30px;color:#7c887f;font-size:.82rem;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+@media(max-width:800px){.hero{grid-template-columns:1fr}.hero-art{min-height:210px}.layout{grid-template-columns:1fr}.sidebar{display:grid;grid-template-columns:1fr 1fr;gap:4px}.side-title,.localbox{grid-column:1/-1}.navbtn{font-size:.85rem}.hero{padding-top:20px}}
+@media(max-width:520px){header,main{padding-left:16px;padding-right:16px}.hero-art{min-height:180px}.sloth{font-size:84px}.row{grid-template-columns:1fr}.workspace-head{display:block}.mode-tag{display:inline-block;margin-top:12px}.sidebar{padding:12px}.navbtn{padding:10px 8px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><div class="logo">zZ</div> SlothDesk AI</div>
+  <div class="pill">Open-source powered</div>
+</header>
+<main>
+  <section class="hero">
+    <div>
+      <div class="eyebrow">Slow down. Get things done.</div>
+      <h1>Less busywork.<br><span>More breathing room.</span></h1>
+      <p>Your gentle productivity sidekick. Turn messy notes into clear next steps, organize your to-do list, and make a low-energy plan with an open-weight AI model running locally.</p>
+      <div class="stats">
+        <div class="stat"><strong>Local-first</strong>Your text stays on your device when using Ollama</div>
+        <div class="stat"><strong>No API key</strong>Use an open-weight model locally</div>
+        <div class="stat"><strong>Your pace</strong>Small steps, not stress</div>
+      </div>
+    </div>
+    <div class="hero-art"><div class="sun"></div><div class="sloth">🦥</div><div class="art-note">Today’s goal: do less, better.</div></div>
+  </section>
+  <section class="layout">
+    <aside class="sidebar">
+      <div class="side-title">Your calm workspace</div>
+      <button class="navbtn active" data-mode="organize">☷ &nbsp; Lazy Task Organizer</button>
+      <button class="navbtn" data-mode="summarize">▤ &nbsp; Note Summarizer</button>
+      <button class="navbtn" data-mode="lowenergy">☁ &nbsp; Low-Energy Mode</button>
+      <button class="navbtn" data-mode="rewrite">✎ &nbsp; Make It Simpler</button>
+      <div class="localbox"><strong style="color:#31563f">Privacy by design</strong><br><span class="dot" id="statusDot"></span><span id="connectionStatus">Not connected to local AI yet</span><br><br>AI requests go to your local Ollama server. The demo fallback works without a model, but uses simple browser logic rather than AI.</div>
+    </aside>
+    <section class="workspace">
+      <div class="workspace-head">
+        <div><h2 id="toolTitle">Lazy Task Organizer</h2><div class="sub" id="toolDesc">Dump everything on your mind. Get a lighter, clearer plan back.</div></div>
+        <div class="mode-tag">LOCAL AI WORKSPACE</div>
+      </div>
+      <label class="field-label" for="userText" id="inputLabel">Your messy task list</label>
+      <textarea id="userText" placeholder="Example: reply to emails, finish cloud lab, buy groceries, submit report, clean downloads folder..."></textarea>
+      <div class="row">
+        <div><label class="field-label" for="modelName">Ollama model</label><input id="modelName" value="llama3.2" aria-label="Ollama model name"></div>
+        <div><label class="field-label" for="energy">Available energy</label><select id="energy"><option value="low">Low — keep it tiny</option><option value="medium" selected>Medium — steady pace</option><option value="high">High — let's focus</option></select></div>
+      </div>
+      <div class="actions">
+        <button class="primary" id="runBtn">Make it easier →</button>
+        <button class="secondary" id="sampleBtn">Try sample</button>
+        <button class="secondary" id="clearBtn">Clear</button>
+      </div>
+      <div class="result" aria-live="polite" id="result"><div class="empty">Your calmer plan will appear here. Connect Ollama for real local AI, or try the built-in demo.</div></div>
+      <div class="notice">Tip: For private local AI, install Ollama and download an open-weight model. The browser demo is not a substitute for a model and may produce basic results only. Do not paste highly sensitive information into tools you do not trust.</div>
+    </section>
+  </section>
+</main>
+<footer><span>SlothDesk AI · Built for the “Slow and Steady” open-source AI challenge</span><span>Small steps count.</span></footer>
+<div class="toast" id="toast"></div>
+<script>
+const modes = {
+ organize:{title:"Lazy Task Organizer",desc:"Dump everything on your mind. Get a lighter, clearer plan back.",label:"Your messy task list",placeholder:"Example: reply to emails, finish cloud lab, buy groceries, submit report, clean downloads folder...",prompt:"Organize the user's tasks into a calm, realistic plan. Group related tasks, choose up to three priorities, estimate effort only when reasonable, and end with one tiny first step. Avoid guilt or overloading. Use clear headings and bullets."},
+ summarize:{title:"Note Summarizer",desc:"Turn a wall of text into the useful bits.",label:"Paste your notes",placeholder:"Paste meeting notes, study notes, or a long chunk of text here...",prompt:"Summarize the text into: 1) a 2-3 sentence overview, 2) key points, 3) action items if any. Be concise and do not invent details."},
+ lowenergy:{title:"Low-Energy Mode",desc:"A softer plan for a day when your battery is running low.",label:"What is on your mind today?",placeholder:"Tell me what you need to do and any time or energy limits...",prompt:"Create a gentle low-energy plan. Pick one must-do, one optional task, and one task to postpone or simplify. Break the first task into a step that takes 5 minutes or less. Be kind, practical, and non-judgmental."},
+ rewrite:{title:"Make It Simpler",desc:"Turn an overwhelming task into a few easy first steps.",label:"What feels too big right now?",placeholder:"Example: I need to prepare for my cloud certification and don't know where to start...",prompt:"Break the user's task into small, concrete steps. Start with a 5-minute action. Keep the plan realistic, remove unnecessary work, and explain what can wait."}
+};
+let mode="organize";
+const $=id=>document.getElementById(id);
+function toast(msg){$("toast").textContent=msg;$("toast").style.display="block";setTimeout(()=>$("toast").style.display="none",2800)}
+function setMode(next){
+ mode=next;document.querySelectorAll(".navbtn").forEach(b=>b.classList.toggle("active",b.dataset.mode===next));
+ const m=modes[next];$("toolTitle").textContent=m.title;$("toolDesc").textContent=m.desc;$("inputLabel").textContent=m.label;$("userText").placeholder=m.placeholder;$("result").innerHTML='<div class="empty">Ready when you are. Add your text and select “Make it easier”.</div>';
+}
+document.querySelectorAll(".navbtn").forEach(b=>b.addEventListener("click",()=>setMode(b.dataset.mode)));
+$("sampleBtn").addEventListener("click",()=>{
+ const samples={
+ organize:"Reply to 5 emails; finish Azure lab; submit course report tomorrow; buy groceries; tidy downloads folder; message project teammate.",
+ summarize:"Cloud computing provides on-demand access to computing resources over the internet. Main benefits include scalability, elasticity, cost efficiency, and global reach. Virtual machines provide flexible compute, object storage stores unstructured data, and virtual networks isolate and connect cloud resources. Remember to review security, access controls, and cost alerts before deploying.",
+ lowenergy:"I need to finish a cloud lab, reply to a few messages, prepare dinner, and study for 30 minutes. I feel tired and only have about an hour.",
+ rewrite:"Prepare for my cloud certification. I need to review networking, compute, storage, identity, monitoring, practice questions, and schedule the exam."
+ };
+ $("userText").value=samples[mode];
+});
+$("clearBtn").addEventListener("click",()=>{$("userText").value="";$("result").innerHTML='<div class="empty">Cleared. Take a breath — you can start fresh.</div>'});
+function demoAnswer(text){
+ const lines=text.split(/\n|;|,(?!\s*\d)/).map(s=>s.trim()).filter(Boolean);
+ if(mode==="summarize"){
+  const short=text.trim().split(/(?<=[.!?])\s+/).slice(0,3).join(" ");
+  return "QUICK SUMMARY\n"+(short||"Add a little more text to summarize.")+"\n\nKEY POINTS\n"+lines.slice(0,5).map(x=>"• "+x.replace(/[.!]$/,"")).join("\n")+"\n\nNEXT STEP\n• Review the key points and choose one action to do first.";
+ }
+ if(mode==="lowenergy") return "YOUR GENTLE PLAN\n\n1. MUST-DO\n• Pick the one task with the nearest real deadline and work on it for 10 minutes.\n\n2. OPTIONAL\n• If you still have energy, handle one small message or preparation step.\n\n3. CAN WAIT\n• Move the remaining tasks to another day without guilt.\n\nTINY FIRST STEP\n• Open the task you chose and write down the very next action.\n\nRemember: a small start is still progress.";
+ if(mode==="rewrite") return "MAKE IT SMALLER\n\n1. First 5 minutes: open the relevant document or learning resource.\n2. Next: write down the three most important things to understand.\n3. Work in one 15-minute focus session.\n4. Take a short break, then decide whether to continue.\n\nWHAT CAN WAIT\nLeave polish and optional extras until the essentials are done.\n\nYOUR FIRST MOVE\nStart a 5-minute timer and do only step 1.";
+ const chosen=lines.slice(0,3);
+ return "YOUR LIGHTER PLAN\n\nTOP 3 PRIORITIES\n"+(chosen.length?chosen.map((x,i)=>(i+1)+". "+x).join("\n"):"1. Write down the one thing that matters most today.")+"\n\nQUICK WINS\n"+(lines.slice(3,6).map(x=>"• "+x).join("\n")||"• Choose one task that can be finished in 5–10 minutes.")+"\n\nMAKE IT EASIER\n• Batch similar tasks together.\n• Set a 15-minute timer, then take a break.\n• Anything non-urgent can wait.\n\nTINY FIRST STEP\nOpen the first task and work on it for just five minutes.";
+}
+async function runAI(){
+ const text=$("userText").value.trim();if(!text){toast("Add a few notes or tasks first.");$("userText").focus();return}
+ const model=$("modelName").value.trim()||"llama3.2";const btn=$("runBtn");btn.disabled=true;btn.textContent="Thinking gently…";
+ $("result").textContent="Asking your local model…";
+ const prompt=modes[mode].prompt+"\nAvailable energy: "+$("energy").value+".\nUser text:\n"+text;
+ try{
+  const response=await fetch("http://localhost:11434/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model,messages:[{role:"system",content:"You are SlothDesk, a calm, privacy-conscious productivity assistant. Be practical, concise, kind, and never shame the user. Do not claim to have performed actions outside this chat."},{role:"user",content:prompt}],stream:false,options:{temperature:0.5}})});
+  if(!response.ok) throw new Error("Ollama returned HTTP "+response.status);
+  const data=await response.json();$("result").textContent=data.message?.content||"The model returned an empty response.";
+  $("statusDot").classList.add("on");$("connectionStatus").textContent="Connected to local Ollama";
+ }catch(err){
+  $("result").textContent="LOCAL AI NOT REACHED\n\nShowing the built-in demo response instead.\n\n"+demoAnswer(text)+"\n\nTo enable real AI: install/start Ollama, download a model such as llama3.2, and allow this page's origin in OLLAMA_ORIGINS. See README.md for setup. Technical detail: "+err.message;
+  $("statusDot").classList.remove("on");$("connectionStatus").textContent="Local AI unavailable — demo mode";
+ }finally{btn.disabled=false;btn.textContent="Make it easier →"}
+}
+$("runBtn").addEventListener("click",runAI);
+$("result").addEventListener("dblclick",async()=>{try{await navigator.clipboard.writeText($("result").innerText);toast("Result copied")}catch(e){toast("Select the result text and copy it")}})
+</script>
+</body>
+</html>
